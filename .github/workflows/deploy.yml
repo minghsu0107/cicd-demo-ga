@@ -43,13 +43,14 @@ jobs:
           tags: minghsu0107/cicd-demo-ga:${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }},minghsu0107/cicd-demo-ga:latest
 
       - name: Update Manifests
-        uses: minghsu0107/update-kustomization@v1.0.5
+        uses: minghsu0107/update-kustomization:v1.1.0
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           IMAGES: minghsu0107/cicd-demo-ga
           IMAGE_TAG: ${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }}
           MANIFEST_HOST: github.com
           MANIFEST_USER: minghsu0107
+          MANIFEST_USER_EMAIL: minghsu0107@gmail.com
           MANIFEST_REPO: cicd-demo-ga-manifests
           MANIFEST_BRANCH: main
           KUSTOMIZATION: production
