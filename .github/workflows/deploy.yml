@@ -43,7 +43,7 @@ jobs:
           tags: minghsu0107/cicd-demo-ga:${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }},minghsu0107/cicd-demo-ga:latest
 
       - name: Update Manifests
-        uses: minghsu0107/update-kustomization:v1.1.0
+        uses: minghsu0107/update-kustomization@v1.1.0
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           IMAGES: minghsu0107/cicd-demo-ga
