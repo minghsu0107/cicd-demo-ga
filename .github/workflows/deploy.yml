@@ -43,19 +43,22 @@ jobs:
           tags: minghsu0107/cicd-demo-ga:${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }},minghsu0107/cicd-demo-ga:latest
 
       - name: Update Manifests
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          IMAGE_TAG: ${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }}
         run: |
           mkdir -p ~/.ssh
-          echo ${{ secrets.SSH_KEY }} | base64 -d > ~/.ssh/id_rsa
+          echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
           chmod 644 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           git clone ssh://git@github.com/minghsu0107/cicd-demo-ga-manifests.git
           cd cicd-demo-ga-manifests
           git checkout main
           cd production
-          kustomize edit set image minghsu0107/cicd-demo-ga:${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }}
+          kustomize edit set image minghsu0107/cicd-demo-ga:$IMAGE_TAG
           git config --global user.name minghsu0107
           git config --global user.email minghsu0107@gmail.com
-          git add . && git commit --allow-empty -m "🚀 update to ${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }}"
+          git add . && git commit --allow-empty -m "🚀 update to $IMAGE_TAG"
           git push ssh://git@github.com/minghsu0107/cicd-demo-ga-manifests.git
 
 
