@@ -43,17 +43,20 @@ jobs:
           tags: minghsu0107/cicd-demo-ga:${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }},minghsu0107/cicd-demo-ga:latest
 
       - name: Update Manifests
-        uses: minghsu0107/update-kustomization@v1.1.1
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
-          MANIFEST_HOST: github.com
-          MANIFEST_USER: minghsu0107
-          MANIFEST_USER_EMAIL: minghsu0107@gmail.com
-          MANIFEST_REPO: cicd-demo-ga-manifests
-          MANIFEST_BRANCH: main
-          IMAGES: minghsu0107/cicd-demo-ga
           IMAGE_TAG: ${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }}
-          KUSTOMIZATION: production
-
-
-          
+        run: |
+          mkdir -p ~/.ssh
+          echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
+          chmod 700 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git clone ssh://git@github.com/minghsu0107/cicd-demo-ga-manifests.git
+          cd cicd-demo-ga-manifests
+          git checkout main
+          cd production
+          kustomize edit set image minghsu0107/cicd-demo-ga:$IMAGE_TAG
+          git config --global user.name minghsu0107
+          git config --global user.email minghsu0107@gmail.com
+          git add . && git commit --allow-empty -m "🚀 update to $IMAGE_TAG"
+          git push ssh://git@github.com/minghsu0107/cicd-demo-ga-manifests.git
