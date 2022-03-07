@@ -47,14 +47,9 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           IMAGE_TAG: ${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }}
         run: |
-          mkdir -p ~/.ssh
-          echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
-          chmod 700 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          git clone ssh://git@github.com/minghsu0107/cicd-demo-ga-manifests.git
-          cd cicd-demo-ga-manifests
-          git checkout main
-          cd production
+          mkdir -p ~/.ssh && echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa && chmod 700 ~/.ssh/id_rsa && ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git clone ssh://git@github.com/minghsu0107/cicd-demo-ga-manifests.git && cd cicd-demo-ga-manifests && git checkout main
+          cd overlays/production
           kustomize edit set image minghsu0107/cicd-demo-ga:$IMAGE_TAG
           git config --global user.name minghsu0107
           git config --global user.email minghsu0107@gmail.com
