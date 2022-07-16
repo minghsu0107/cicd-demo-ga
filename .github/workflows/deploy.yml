@@ -41,6 +41,19 @@ jobs:
           file: ./src/Dockerfile
           push: true
           tags: minghsu0107/cicd-demo-ga:${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }},minghsu0107/cicd-demo-ga:latest
+      
+      - name: Update Manifests
+        uses: minghsu0107/update-kustomization@v1.2.0
+        with:
+          ssh_key: ${{ secrets.SSH_KEY }}
+          manifest_host: github.com
+          manifest_user: minghsu0107
+          manifest_user_email: minghsu0107@gmail.com
+          manifest_repo: cicd-demo-ga-manifests
+          manifest_branch: main
+          images: minghsu0107/cicd-demo-ga
+          image_tag: ${{ github.ref_name }}-${{ steps.get-sha.outputs.sha }}
+          kustomization: overlays/dev
 
       - name: Update Manifests
         env:
